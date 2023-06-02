@@ -6,36 +6,71 @@
 /*   By: tchoquet <tchoquet@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 21:48:56 by tchoquet          #+#    #+#             */
-/*   Updated: 2023/06/01 22:22:17 by tchoquet         ###   ########.fr       */
+/*   Updated: 2023/06/02 21:55:33 by tchoquet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
+static char		*free_str(char *str);
+static void		reset_buffer(char *buffer, size_t len);
+static size_t	first_index(char c, char buffer[], size_t len);
+
 char	*get_next_line(int fd)
 {
-	char	*str;
-	size_t	str_len;
-	char	buffer[BUFFER_SIZE];
-	size_t	read_len;
+	static char	buffer[BUFFER_SIZE] = {};
+	char		*str;
+	ssize_t		read_len;
 
-	str_len = 1;
-	str = malloc(sizeof(char) * str_len);
-	read_len = 1;
-	while (str && read_len > 0 && str[str_len - 2] != '\n')
+	str = ft_substr("", 0, 0);
+	while (str && str[ft_strlen(str) - 1] != '\n')
 	{
-		read_len = read(fd, buffer, 1024);
+		read_len = read(fd, buffer + ft_strlen(buffer), BUFFER_SIZE - ft_strlen(buffer));
 		if (read_len < 0)
-		{
-			free(str);
-			return (NULL);
-		}
-		str = realloc(str, str_len + read_len);
-		if (str != NULL)
-			memcpy(str + (str_len - 1), buffer, read_len);
-		str_len += read_len;
+			return (free_str(str));
+		str = ft_strjoin(str, ft_substr(buffer, 0, first_index('\n', buffer, ft_strlen(buffer)) + 1));
+		reset_buffer(buffer, ft_strlen(buffer));
+		if (str[0] == '\0')
+			return (free_str(str));
+		else if (read_len == 0)
+			return (str);
 	}
-	if (str != NULL)
-		str[str_len - 1] = '\0';
 	return (str);
+}
+
+static char	*free_str(char *str)
+{
+	if (str)
+		free(str);
+	return (NULL);
+}
+
+static void	reset_buffer(char *buffer, size_t len)
+{
+	size_t	i;
+	size_t	n_index;
+
+	if (len == 0)
+		return ;
+	i = 0;
+	n_index = first_index('\n', buffer, len);
+	while (i <= n_index)
+		buffer[i++] = 0;
+	ft_memmove(buffer,
+		buffer + n_index + 1,
+		len - (n_index + 1));
+}
+
+static size_t	first_index(char c, char buffer[], size_t len)
+{
+	size_t	i;
+
+	i = 0;
+	while (i < len)
+	{
+		if (buffer[i] == c)
+			return (i);
+		i++;
+	}
+	return (len - 1);
 }

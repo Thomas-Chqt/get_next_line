@@ -6,7 +6,7 @@
 /*   By: tchoquet <tchoquet@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 21:47:36 by tchoquet          #+#    #+#             */
-/*   Updated: 2023/06/01 22:11:34 by tchoquet         ###   ########.fr       */
+/*   Updated: 2023/06/02 20:05:39 by tchoquet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,16 @@
 # define GET_NEXT_LINE_H
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 1024
+#  define BUFFER_SIZE 42
 # endif
 
 #include <libc.h>
 
 char	*get_next_line(int fd);
+
+char	*ft_strjoin(char *s1, char *s2);
+size_t	ft_strlen(const char *s);
+char	*ft_substr(char const *s, unsigned int start, size_t len);
+void	ft_memmove(void *dst, const void *src, size_t len);
 
 #endif
