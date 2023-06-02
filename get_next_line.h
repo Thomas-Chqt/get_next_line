@@ -6,7 +6,7 @@
 /*   By: tchoquet <tchoquet@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 21:47:36 by tchoquet          #+#    #+#             */
-/*   Updated: 2023/06/02 20:05:39 by tchoquet         ###   ########.fr       */
+/*   Updated: 2023/06/02 22:39:23 by tchoquet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,11 @@
 # define GET_NEXT_LINE_H
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 42
+#  define BUFFER_SIZE 1024
 # endif
 
-#include <libc.h>
+# include <unistd.h>
+# include <stdlib.h>
 
 char	*get_next_line(int fd);
 

@@ -6,7 +6,7 @@
 /*   By: tchoquet <tchoquet@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 21:48:56 by tchoquet          #+#    #+#             */
-/*   Updated: 2023/06/02 21:55:33 by tchoquet         ###   ########.fr       */
+/*   Updated: 2023/06/02 22:39:17 by tchoquet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,12 @@ char	*get_next_line(int fd)
 	str = ft_substr("", 0, 0);
 	while (str && str[ft_strlen(str) - 1] != '\n')
 	{
-		read_len = read(fd, buffer + ft_strlen(buffer), BUFFER_SIZE - ft_strlen(buffer));
+		read_len = read(fd, buffer + ft_strlen(buffer),
+				BUFFER_SIZE - ft_strlen(buffer));
 		if (read_len < 0)
 			return (free_str(str));
-		str = ft_strjoin(str, ft_substr(buffer, 0, first_index('\n', buffer, ft_strlen(buffer)) + 1));
+		str = ft_strjoin(str, ft_substr(buffer, 0, first_index('\n',
+						buffer, ft_strlen(buffer)) + 1));
 		reset_buffer(buffer, ft_strlen(buffer));
 		if (str[0] == '\0')
 			return (free_str(str));
