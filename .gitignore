@@ -2,3 +2,4 @@
 .gnlTester
 test.txt
 *.plist
+.DS_Store
