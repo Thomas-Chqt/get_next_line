@@ -6,14 +6,14 @@
 /*   By: tchoquet <tchoquet@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 21:48:56 by tchoquet          #+#    #+#             */
-/*   Updated: 2023/06/09 18:36:10 by tchoquet         ###   ########.fr       */
+/*   Updated: 2023/06/10 11:55:50 by tchoquet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
 static void	reset_buffer(unsigned char *buffer, size_t len);
-static char *free_str(char *str);
+static char	*free_str(char *str);
 
 char	*get_next_line(int fd)
 {
@@ -21,7 +21,8 @@ char	*get_next_line(int fd)
 	char					*line;
 	ssize_t					read_len;
 
-	line = append_buff(NULL, buffer, first_index((unsigned char)'\n', buffer, BUFFER_SIZE) + 1);
+	line = append_buff(NULL, buffer,
+			first_index((unsigned char) '\n', buffer, BUFFER_SIZE) + 1);
 	if (line == NULL)
 		return (NULL);
 	reset_buffer(buffer, BUFFER_SIZE);
@@ -30,7 +31,8 @@ char	*get_next_line(int fd)
 		read_len = read(fd, buffer, BUFFER_SIZE);
 		if (read_len < 0)
 			return (free_str(line));
-		line = append_buff(line, buffer, first_index((unsigned char)'\n', buffer, read_len) + 1);
+		line = append_buff(line, buffer,
+				first_index((unsigned char) '\n', buffer, read_len) + 1);
 		if (line == NULL || line[0] == '\0')
 			return (free_str(line));
 		reset_buffer(buffer, read_len);
@@ -48,13 +50,13 @@ static void	reset_buffer(unsigned char *buffer, size_t len)
 	if (len == 0)
 		return ;
 	i = 0;
-	n_index = first_index((unsigned char)'\n', buffer, len);
+	n_index = first_index((unsigned char) '\n', buffer, len);
 	while (i <= n_index)
 		buffer[i++] = 0;
 	memmove_zero(buffer, buffer + n_index + 1, len - (n_index + 1));
 }
 
-static char *free_str(char *str)
+static char	*free_str(char *str)
 {
 	free(str);
 	return (NULL);
