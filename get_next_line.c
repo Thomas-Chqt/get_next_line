@@ -6,7 +6,7 @@
 /*   By: tchoquet <tchoquet@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 21:48:56 by tchoquet          #+#    #+#             */
-/*   Updated: 2023/06/10 11:55:50 by tchoquet         ###   ########.fr       */
+/*   Updated: 2023/06/10 14:28:57 by tchoquet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ char	*get_next_line(int fd)
 	if (line == NULL)
 		return (NULL);
 	reset_buffer(buffer, BUFFER_SIZE);
-	while (line[gnl_strlen(line) - 1] != '\n')
+	while (line[0] == '\0' || line[gnl_strlen(line) - 1] != '\n')
 	{
 		read_len = read(fd, buffer, BUFFER_SIZE);
 		if (read_len < 0)
