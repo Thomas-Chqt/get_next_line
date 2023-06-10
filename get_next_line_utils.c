@@ -6,42 +6,13 @@
 /*   By: tchoquet <tchoquet@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 17:15:26 by tchoquet          #+#    #+#             */
-/*   Updated: 2023/06/02 19:56:13 by tchoquet         ###   ########.fr       */
+/*   Updated: 2023/06/10 11:54:14 by tchoquet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*ft_strjoin(char *s1, char *s2)
-{
-	char	*output_str;
-	size_t	output_str_len;
-	size_t	i;
-	size_t	j;
-
-	i = 0;
-	j = 0;
-	output_str_len = ft_strlen(s1) + ft_strlen(s2);
-	output_str = malloc(sizeof(char) * (output_str_len + 1));
-	if (!output_str)
-		return (NULL);
-	while (s1 != NULL && s1[i])
-	{
-		output_str[i] = s1[i];
-		i++;
-	}
-	while (s2 != NULL && s2[j])
-	{
-		output_str[i + j] = s2[j];
-		j++;
-	}
-	output_str[i + j] = '\0';
-	free(s1);
-	free(s2);
-	return (output_str);
-}
-
-size_t	ft_strlen(const char *s)
+size_t	gnl_strlen(const char *s)
 {
 	size_t	len;
 
@@ -53,34 +24,42 @@ size_t	ft_strlen(const char *s)
 	return (len);
 }
 
-char	*ft_substr(char const *s, unsigned int start, size_t len)
+char	*append_buff(char *str, void const *buff, size_t buff_len)
 {
 	char	*output_str;
 	size_t	i;
-	size_t	s_len;
-	size_t	malloc_len;
+	size_t	y;
 
-	if (s == NULL)
-		return (NULL);
-	s_len = ft_strlen(s);
-	if (s_len < len)
-		malloc_len = s_len;
-	else
-		malloc_len = len;
-	output_str = malloc((malloc_len + 1) * sizeof(char));
-	if (output_str == NULL)
-		return (NULL);
+	output_str = malloc(sizeof(char) * (gnl_strlen(str) + buff_len + 1));
 	i = 0;
-	while (((start + i) < s_len) && (s + start)[i] && i < len)
+	while (str && str[i])
 	{
-		output_str[i] = (s + start)[i];
+		output_str[i] = str[i];
 		i++;
 	}
-	output_str[i] = 0;
+	y = 0;
+	while (y < buff_len)
+		output_str[i++] = ((char *)buff)[y++];
+	output_str[i] = '\0';
+	free(str);
 	return (output_str);
 }
 
-void	ft_memmove(void *dst, const void *src, size_t len)
+size_t	first_index(unsigned char value, void *buffer, size_t buffer_len)
+{
+	size_t	i;
+
+	i = 0;
+	while (i < buffer_len)
+	{
+		if (((unsigned char *)buffer)[i] == value)
+			return (i);
+		i++;
+	}
+	return (i - 1);
+}
+
+void	memmove_zero(void *dst, void *src, size_t len)
 {
 	size_t	i;
 

@@ -6,48 +6,43 @@
 /*   By: tchoquet <tchoquet@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 21:48:56 by tchoquet          #+#    #+#             */
-/*   Updated: 2023/06/02 22:39:17 by tchoquet         ###   ########.fr       */
+/*   Updated: 2023/06/10 14:28:57 by tchoquet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static char		*free_str(char *str);
-static void		reset_buffer(char *buffer, size_t len);
-static size_t	first_index(char c, char buffer[], size_t len);
+static void	reset_buffer(unsigned char *buffer, size_t len);
+static char	*free_str(char *str);
 
 char	*get_next_line(int fd)
 {
-	static char	buffer[BUFFER_SIZE] = {};
-	char		*str;
-	ssize_t		read_len;
+	static unsigned char	buffer[BUFFER_SIZE];
+	char					*line;
+	ssize_t					read_len;
 
-	str = ft_substr("", 0, 0);
-	while (str && str[ft_strlen(str) - 1] != '\n')
+	line = append_buff(NULL, buffer,
+			first_index((unsigned char) '\n', buffer, BUFFER_SIZE) + 1);
+	if (line == NULL)
+		return (NULL);
+	reset_buffer(buffer, BUFFER_SIZE);
+	while (line[0] == '\0' || line[gnl_strlen(line) - 1] != '\n')
 	{
-		read_len = read(fd, buffer + ft_strlen(buffer),
-				BUFFER_SIZE - ft_strlen(buffer));
+		read_len = read(fd, buffer, BUFFER_SIZE);
 		if (read_len < 0)
-			return (free_str(str));
-		str = ft_strjoin(str, ft_substr(buffer, 0, first_index('\n',
-						buffer, ft_strlen(buffer)) + 1));
-		reset_buffer(buffer, ft_strlen(buffer));
-		if (str[0] == '\0')
-			return (free_str(str));
-		else if (read_len == 0)
-			return (str);
+			return (free_str(line));
+		line = append_buff(line, buffer,
+				first_index((unsigned char) '\n', buffer, read_len) + 1);
+		if (line == NULL || line[0] == '\0')
+			return (free_str(line));
+		reset_buffer(buffer, read_len);
+		if (read_len < BUFFER_SIZE)
+			return (line);
 	}
-	return (str);
+	return (line);
 }
 
-static char	*free_str(char *str)
-{
-	if (str)
-		free(str);
-	return (NULL);
-}
-
-static void	reset_buffer(char *buffer, size_t len)
+static void	reset_buffer(unsigned char *buffer, size_t len)
 {
 	size_t	i;
 	size_t	n_index;
@@ -55,24 +50,14 @@ static void	reset_buffer(char *buffer, size_t len)
 	if (len == 0)
 		return ;
 	i = 0;
-	n_index = first_index('\n', buffer, len);
+	n_index = first_index((unsigned char) '\n', buffer, len);
 	while (i <= n_index)
 		buffer[i++] = 0;
-	ft_memmove(buffer,
-		buffer + n_index + 1,
-		len - (n_index + 1));
+	memmove_zero(buffer, buffer + n_index + 1, len - (n_index + 1));
 }
 
-static size_t	first_index(char c, char buffer[], size_t len)
+static char	*free_str(char *str)
 {
-	size_t	i;
-
-	i = 0;
-	while (i < len)
-	{
-		if (buffer[i] == c)
-			return (i);
-		i++;
-	}
-	return (len - 1);
+	free(str);
+	return (NULL);
 }
